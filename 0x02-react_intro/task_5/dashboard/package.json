@@ -1,0 +1,42 @@
+{
+  "name": "dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development --config config/webpack.config.js",
+    "build": "webpack --mode production --config config/webpack.config.js",
+    "start": "webpack-dev-server --mode development --config config/webpack.config.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^6.2.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "file-loader": "^6.2.0",
+    "image-webpack-loader": "^7.0.1",
+    "jest": "^27.0.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-loader": "^2.4.7",
+    "style-loader": "^3.2.1",
+    "web-vitals": "^2.1.0",
+    "webpack": "^5.50.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.0.0"
+  },
+  "dependencies": {},
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/setupTests.js",
+      "\\.(css|sass)$": "<rootDir>/config/setupTests.js"
+    }
+  }
+}
