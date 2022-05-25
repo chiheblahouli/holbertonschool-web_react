@@ -1,13 +1,12 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-.container{
-  padding: 8px;
-  height: 100vh;
-  display:flex;
-  flex-direction: column;
+:root {
+  --main-color: #e01d3f;
 }
 
+.App {
+  border-bottom: 3px solid var(--main-color);
+}
 
+.App-body {
+  display: flex;
+  justify-content: center;
+}

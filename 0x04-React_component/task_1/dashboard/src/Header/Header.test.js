@@ -1,19 +1,20 @@
+import { shallow } from "enzyme";
+import React from "react";
 import Header from "./Header";
-import {shallow} from 'enzyme';
-import React from 'react';
 
-
-describe('<Header />', () => {
+describe("<Header />", () => {
+  it("Header renders without crashing", () => {
     const wrapper = shallow(<Header />);
-    it('renders a div with className Header without crashing', () =>{
-        expect(wrapper.find('.Header').exists()).toBeTruthy()
-    });
-
-    it('renders an app logo', () =>{
-        expect(wrapper.find('.Header-logo').exists()).toBeTruthy()
-    });
-
-    it('renders a heading tag', () =>{
-        expect(wrapper.find('h1').exists()).toBeTruthy()
-    });
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render img", () => {
+    const wrapper = shallow(<Header />);
+    wrapper.update();
+    expect(wrapper.find("div.header img")).toHaveLength(1);
+  });
+  it("Verify that the components render h1", () => {
+    const wrapper = shallow(<Header />);
+    wrapper.update();
+    expect(wrapper.find("div.header h1")).toHaveLength(1);
+  });
 });

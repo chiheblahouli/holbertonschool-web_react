@@ -1,15 +1,14 @@
-import React from 'react';
-import './Header.css';
-import logo from '../assets/Holberton_Logo.jpg';
+import React from "react";
+import holberton_logo from "../assets/holberton_logo.jpg";
+import "./Header.css";
 
 function Header() {
   return (
-
-      <div className="Header">
-        <img src={logo} className="Header-logo" alt="logo" />
-        <h1>School dashboard</h1>
-      </div>
-    );
+    <div className="header">
+      <img src={holberton_logo} />
+      <h1>School dashboard</h1>
+    </div>
+  );
 }
 
 export default Header;

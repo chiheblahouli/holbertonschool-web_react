@@ -1,77 +1,73 @@
-import React, { Component } from 'react';
-import Notifications from '../Notifications/Notifications';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Footer from '../Footer/Footer';
-import CourseList from '../CourseList/CourseList';
-import { PropTypes, } from 'prop-types';
-import { getLatestNotification } from '../utils/utils';
-import './App.css';
-import ReactDOM from 'react-dom';
-import { render } from 'enzyme';
+import React, { Component } from "react";
+import Notifications from "../Notifications/Notifications";
+import Header from "../Header/Header";
+import Login from "../Login/Login";
+import CourseList from "../CourseList/CourseList";
+import Footer from "../Footer/Footer";
+import PropTypes from "prop-types";
+import { getLatestNotification } from "../utils/utils";
+import "./App.css";
 
-let listCourses = [{id: 1, name: 'ES6', credit: 60}, {id: 2, name: 'Webpack', credit: 20}, {id: 3, name: 'React', credit: 40}]
-let listNotifications = [{id: 1, value: "New course available", type: 'default'}, {id: 2,  value:"New resume available", type:'urgent'}, {id: 3,html: {__html: getLatestNotification()}, type:'urgent'}]
+const listCourses = [
+  { id: 1, name: "ES6", credit: 60 },
+  { id: 2, name: "Webpack", credit: 20 },
+  { id: 3, name: "React", credit: 40 },
+];
 
+const listNotifications = [
+  { id: 1, type: "default", value: "New course available" },
+  { id: 2, type: "urgent", value: "New resume available" },
+  { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
+];
 
-class App extends React.Component {
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.handleKeyCombination = this.handleKeyCombination.bind(this);
+  }
 
-
-
-
-  handleKeys(event){
-    if (event.ctrlKey && (event.key === 'h')){
-      event.preventDefault();
-      alert('Logging you out')
-      this.logOut()
+  handleKeyCombination(e) {
+    if (e.key === "h" && e.ctrlKey) {
+      alert("Logging you out");
+      this.props.logOut();
     }
   }
 
-
-
-
-
-
-
-  componentDidMount(){
-    window.addEventListener('keydown', (event) => {
-      this.handleKeys(event);
-    });
-
-    
-
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyCombination);
   }
 
-
-
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.handleKeys, false);
-  };
+    document.removeEventListener("keydown", this.handleKeyCombination);
+  }
 
- 
- 
-  render(){
+  render() {
+    const { isLoggedIn, logOut } = this.props;
     return (
-    <React.Fragment>
-      <div className="App">
-      <Notifications listNotifications={listNotifications}/>
-      <Header />
-      {this.props.isLoggedIn ? (<CourseList listCourses={listCourses} />):(<Login />)}
-      <Footer />
-      </div>
-    </React.Fragment>
-  );
+      <>
+        <Notifications listNotifications={listNotifications} />
+        <div className="App">
+          <Header />
+        </div>
+        <div className="App-body">
+          {!isLoggedIn ? <Login /> : <CourseList listCourses={listCourses} />}
+        </div>
+        <div className="App-footer">
+          <Footer />
+        </div>
+      </>
+    );
+  }
 }
-}
-
 
 App.defaultProps = {
   isLoggedIn: false,
-  logOut: () => {}
+  logOut: () => {},
 };
 
 App.propTypes = {
+  isLoggedIn: PropTypes.bool,
   logOut: PropTypes.func,
-}
+};
 
 export default App;

@@ -1,52 +1,41 @@
-import {shallow} from 'enzyme';
-import App from './App';
-import React from 'react';
-import CourseList from '../CourseList/CourseList'
+import { shallow } from "enzyme";
+import React from "react";
+import App from "./App";
 
-describe('<App />', () => {
+describe("<App />", () => {
+  it("App renders without crashing", () => {
     const wrapper = shallow(<App />);
-    it('renders <App /> components without crashing', () => {
-      expect(wrapper.find('.App').exists()).toBeTruthy()
-    });
-
-    it('renders Notifications components without crashing', () => {
-        expect(wrapper.find('Notifications').exists()).toBeTruthy()
-      });
-
-    it('renders a Header without crashing', () =>{
-        expect(wrapper.find('Header').exists()).toBeTruthy()
-    });
-
-    it('renders Login without crashing', () =>{
-        expect(wrapper.find('Login').exists()).toBeTruthy()
-    });
-
-    it('renders Footer without crashing', () =>{
-        expect(wrapper.find('Footer').exists()).toBeTruthy();
-    });
-
-    it('CourseList  do  not exist when isloggedin true', () =>{
-        const wrapper = shallow(<App isLoggedIn={false}/>);
-        expect(wrapper.find(CourseList).exists()).toBeFalsy(); 
-    
-    });
-
-    it('Login do exist when isloggedin false', () =>{
-        const wrapper = shallow(<App isLoggedIn={false}/>);
-        expect(wrapper.find('Login').exists()).toBeTruthy(); 
-    
-    });
-
-    it('CourseList do  exist when isloggedin true', () =>{
-        const wrapper = shallow(<App isLoggedIn={true}/>);
-        expect(wrapper.find(CourseList).exists()).toBeTruthy(); 
-    
-    });
-    it('Login do not exist when isloggedin true', () =>{
-        const wrapper = shallow(<App isLoggedIn={true}/>);
-        expect(wrapper.find('Login').exists()).toBeFalsy(); 
-    
-    });
-
-    
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("should contain the Notifications component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Notifications")).toHaveLength(1);
+  });
+  it("should contain the Header component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Header")).toHaveLength(1);
+  });
+  it("should contain the Login component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Login")).toHaveLength(1);
+  });
+  it("should contain the Footer component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Footer")).toHaveLength(1);
+  });
+  it("CourseList is not displayed with isLoggedIn false by default", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("CourseList")).toHaveLength(0);
+  });
+  it("isLoggedIn is true", () => {
+    const wrapper = shallow(<App isLoggedIn />);
+    wrapper.update();
+    expect(wrapper.find("Login")).toHaveLength(0);
+    expect(wrapper.find("CourseList")).toHaveLength(1);
+  });
 });

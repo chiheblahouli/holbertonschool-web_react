@@ -1,27 +1,30 @@
 import { shallow } from "enzyme";
-import React from 'react';
-import Notificationitems from "./NotificationItem";
+import React from "react";
+import NotificationItem from "./NotificationItem";
 
-describe('Notification item Component should render Li items without crashing', () => {
-    let wrapper = shallow(<Notificationitems />)
-    it('should render ',() => {
-       expect(wrapper.find("li").exists()).toBeTruthy() 
-    });
+describe("<Notifications />", () => {
+  it("NotificationItem renders without crashing", () => {
+    const wrapper = shallow(<NotificationItem />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that by passing dummy type and value props, it renders the correct html", () => {
+    const wrapper = shallow(<NotificationItem type="default" value="test" />);
+    wrapper.update();
+    const listItem = wrapper.find("li");
 
-    
-    it('should render ',() => {
-        const wrapper = shallow(<Notificationitems value={'value-test'} type={'default-test'} />)
-        expect(wrapper.find("li").text()).toMatch('value-test')
-     });
-
-    it('should render ',() => {
-        const wrapper = shallow(<Notificationitems value={'value-test'} type={'default-test'} />)
-        expect(wrapper.find("li").prop('data-notification-type')).toMatch('default-test')
-        });
-    
-    
-    it('should render ',() => {
-        const wrapper = shallow(<Notificationitems html={'<u>value-test<u>'} type={'default-test'} />)
-        expect(wrapper.find("li").prop('dangerouslySetInnerHTML')).toEqual({"__html": "<u>value-test<u>"})
-    });
-})
+    expect(listItem).toHaveLength(1);
+    expect(listItem.text()).toEqual("test");
+    expect(listItem.prop("data-notification-type")).toEqual("default");
+  });
+  it("Passing a dummy html prop, it renders the correct html (for example", () => {
+    const text = "Here is the list of notifications";
+    const wrapper = shallow(
+      <NotificationItem html={{ __html: "<u>test</u>" }} />
+    );
+    wrapper.update();
+    const listItem = wrapper.find("li");
+    expect(listItem.html()).toEqual(
+      '<li data-notification-type="default"><u>test</u></li>'
+    );
+  });
+});

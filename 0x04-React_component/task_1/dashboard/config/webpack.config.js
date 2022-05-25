@@ -1,51 +1,43 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
 
 module.exports = {
-  entry: './src/index.js',
+  mode: "development",
+  devtool: "inline-source-map",
+  entry: "./src/index.js",
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "bundle.js",
+    path: path.resolve("./dist"),
   },
-
-  devtool: 'inline-source-map',
   devServer: {
-    static: './dist',
-   hot: true,
+    hot: true,
+    contentBase: path.resolve("./dist"),
+    compress: true,
+    port: 8564,
   },
-  mode: 'development',
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
         use: [
-          'file-loader',
+          "file-loader",
           {
-            loader: 'image-webpack-loader',
+            loader: "image-webpack-loader",
             options: {
-              mozjpeg: {
-                progressive: true,
-              }
-            }
-          }
-        ]
+              bypassOnDebug: true, // webpack@1.x
+              disable: true, // webpack@2.x and newer
+            },
+          },
+        ],
       },
-      {
-				test: /\.(js|jsx)$/,
-				exclude: /node_modules/,
-				loader: 'babel-loader',
-			},
     ],
   },
-  plugins: [
-		new HtmlWebpackPlugin({
-      template: './dist/index.html',
-      title: 'Holberton Dashboard',
-    }),
-  ],
-
-}
+};

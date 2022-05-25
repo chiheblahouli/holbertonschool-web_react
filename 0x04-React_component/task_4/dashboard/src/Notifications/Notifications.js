@@ -1,73 +1,72 @@
-import React from 'react';
-import './Notifications.css';
-import closeIcon from '../assets/closeIcon.png';
-import { getLatestNotification } from '../utils';
-import { NotificationItem } from './NotificationItem';
-import PropTypes from 'prop-types'
-import { NotificationItemShape } from '../utils';
+import React, { Component } from "react";
+import NotificationItem from "./NotificationItem";
+import PropTypes from "prop-types";
+import NotificationItemShape from "./NotificationItemShape";
+import "./Notifications.css";
+import closeIcon from "../assets/close-icon.png";
 
+class Notifications extends Component {
+  constructor(props) {
+    super(props);
+    this.markAsRead = this.markAsRead.bind(this);
+  }
 
-class Notifications extends React.Component{
-    markAsRead(id){
-        console.log(`Notification ${id} has been marked as read`)
-    }
-    render(){
-        return(<div className="containerx">
+  markAsRead(id) {
+    console.log(`Notification ${id} has been marked as read`);
+  }
+
+  render() {
+    const { displayDrawer, listNotifications } = this.props;
+    return (
+      <>
         <div className="menuItem">
-            Your notifications
+          <p>Your notifications</p>
         </div>
+        {displayDrawer && (
+          <div className="Notifications">
+            <button
+              style={{
+                background: "transparent",
+                border: "none",
+                position: "absolute",
+                right: 20,
+              }}
+              aria-label="close"
+            >
+              <img src={closeIcon} alt="close-icon" />
+            </button>
+            <p>Here is the list of notifications</p>
+            <ul>
+              {listNotifications.length === 0 && (
+                <NotificationItem value="No new notification for now" />
+              )}
 
-        {(this.props.displayDrawer && this.props.listNotifications.length === 0 && "no new Notifications") || (this.props.displayDrawer && <div className="Notifications" style={{ "paddingBottom": "18px" }}>
-
-            <div style={{ "padding": "18px", "display": "flex", "justifyContent": "space-between" }}>
-                {this.props.displayDrawer && <p style={{ "fontSize": "12px" }}>
-                    Here is the lists of notifications
-                </p>}
-                <button
-                    type="submit"
-                    aria-label="Close"
-                    onClick={() => console.log("Close button has been clicked")}
-                >
-                    <img src={closeIcon} alt="" width="24" height="10" />
-                </button>
-            </div>
-
-            <div style={{ "padding": "0 18px" }} className="list">
-
-                {this.props.displayDrawer && <ul style={{ "padding": "0 18px" }} className="listNotificationItems">
-                {this.props.listNotifications.map(item=> {
-                    return(
-                        <NotificationItem
-                        markAsRead={this.markAsRead}
-                        key={item.id}
-                        id={item.id}
-                        type={item.type}
-                        value={item.value}
-                        html={item.html || ''}
-                        />
-                    )
-                })}
-                </ul>}
-            </div>
-        </div>)}
-
-    </div>
-
-        )
-    }
-}
-
-
-
-Notifications.propTypes  = {
-    displayDrawer: PropTypes.bool,
-    listNotifications: PropTypes.arrayOf(NotificationItemShape)
+              {listNotifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  id={notification.id}
+                  type={notification.type}
+                  value={notification.value}
+                  html={notification.html}
+                  markAsRead={this.markAsRead}
+                />
+              ))}
+            </ul>
+          </div>
+        )}
+      </>
+    );
+  }
 }
 
 Notifications.defaultProps = {
-    displayDrawer: false,
-    listNotifications:[]
-
+  displayDrawer: false,
+  listNotifications: [],
 };
 
-export { Notifications };
+Notifications.propTypes = {
+  displayDrawer: PropTypes.bool,
+  listNotifications: PropTypes.arrayOf(NotificationItemShape),
+};
+
+export default Notifications;

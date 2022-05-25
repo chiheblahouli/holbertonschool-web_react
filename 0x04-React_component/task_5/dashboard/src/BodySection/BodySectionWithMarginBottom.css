@@ -1,6 +1,4 @@
-.bodySectionWithMargin  {
-    margin-bottom: 40px;
-}
-
-.bodySection {
+.bodySectionWithMargin {
+  margin-bottom: 40px;
+  width: 100%;
 }
