@@ -1,35 +1,45 @@
-import React from 'react';
-import { css, StyleSheet } from "aphrodite";
+import React from "react";
+import { StyleSheet, css } from "aphrodite";
+
+function Login() {
+  return (
+    <div className={css(styles.login)}>
+      <p>Login to access the full dashboard</p>
+      <label htmlFor="email">Email:</label>
+      <input type="email" id="email" className={css(styles.loginInput)} />
+      <label htmlFor="password">Password:</label>
+      <input type="password" id="password" className={css(styles.loginInput)} />
+      <button>OK</button>
+    </div>
+  );
+}
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
 
 const styles = StyleSheet.create({
-
-    appBody: {
-        fontFamily: "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif",
-        fontSize: "18px",
-        padding: "18px",
-        flex: "0.6",
-        fontWeight: "800",
-        paddingBottom: "100px"
+  login: {
+    margin: "50px",
+    flexGrow: 1,
+    [screenSize.small]: {
+      marginTop: "10px",
+      marginLeft: 0,
+      marginRight: 0,
+      marginBottom: 0,
     },
-    text: { paddingBottom: "48px" }
-})
+  },
 
+  loginInput: {
+    marginLeft: "10px",
+    marginRight: "20px",
+    [screenSize.small]: {
+      display: "block",
+      marginLeft: 0,
+      marginTop: "10px",
+      marginBottom: "10px",
+    },
+  },
+});
 
-export const LoginComponent = () => {
-    return (
-        <React.Fragment>
-            <div className={css(styles.appBody)}>           
-            <p className={css(styles.text)}>Login to access the full dashboard</p>
-            <div className="form">
-                <form style={{ "display": "flex", "flexDirection": "column", "width": "20%" }}>
-                    <label htmlFor="email">Email</label>
-                    <input type="email" style={{ "flexBasis": "0.2" }} name="email" id="email" />
-                    <label htmlFor="pwdInput">Password</label>
-                    <input type="password" name="pwdInput" id="pwdInput" />
-                    <button type="submit">OK</button>
-                </form>
-            </div>
-            </div>
-        </React.Fragment>
-    )
-}
+export default Login;

@@ -1,29 +1,28 @@
-import React from 'react';
-import { Header } from './Header';
-import { shallow } from 'enzyme';
+import { shallow } from "enzyme";
+import React from "react";
+import Header from "./Header";
+import { StyleSheetTestUtils } from "aphrodite";
 
-import { StyleSheetTestUtils } from 'aphrodite';
+describe("<Header />", () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-StyleSheetTestUtils.suppressStyleInjection();
-describe('<Header />', () => {
-
-    it('Header renders without crashing', () => {
-        const wrapper = shallow(<Header />);
-        expect(wrapper).toHaveLength(1);
-
-    });
-    it('Header have two childrens', () => {
-        const wrapper = shallow(<Header />);
-        expect(wrapper.find('div').children()).toHaveLength(2)
-    })
-
-    /*it('Header have img', () => {
-        const wrapper = shallow(<Header />);
-        expect(wrapper.find('div.App-header img')).toHaveLength(1);
-    });*/
-   
-    it('Header have h1', () => {
-        const wrapper = shallow(<Header />);
-        expect(wrapper.contains("School dashboard")).toBeTruthy();
-    });
+  it("Header renders without crashing", () => {
+    const wrapper = shallow(<Header />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render img", () => {
+    const wrapper = shallow(<Header />);
+    wrapper.update();
+    expect(wrapper.find("div img")).toHaveLength(1);
+  });
+  it("Verify that the components render h1", () => {
+    const wrapper = shallow(<Header />);
+    wrapper.update();
+    expect(wrapper.find("div h1")).toHaveLength(1);
+  });
 });

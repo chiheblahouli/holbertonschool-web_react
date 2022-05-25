@@ -1,42 +1,51 @@
-import React from 'react';
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
+import "./Notifications.css";
 
+const NotificationItem = React.memo(function NotificationItem({
+  type,
+  value,
+  html,
+  markAsRead,
+  id,
+}) {
+  let listItem;
 
- const NotificationItemUnmemo = ({ type, value, html, markAsRead, id, className }) => {
-    if (html) {
-        return (
-            <li
-            className = {className}
-            onClick={()=>markAsRead(id)}
-            dangerouslySetInnerHTML={html}>
-            </li>
-        )
-    }
-    return (
-        <li
-        className = {className}
+  if (value) {
+    listItem = (
+      <li data-notification-type={type} onClick={() => markAsRead(id)}>
+        {value}
+      </li>
+    );
+  } else {
+    listItem = (
+      <li
+        data-notification-type={type}
+        dangerouslySetInnerHTML={html}
+        onClick={() => markAsRead(id)}
+      ></li>
+    );
+  }
 
-        onClick={()=>markAsRead(id)}
-       >
-            {value}
-        </li>
-    )
-}
+  return listItem;
+});
 
+NotificationItem.defaultProps = {
+  type: "default",
+  value: "",
+  html: {},
+  markAsRead: () => {},
+  id: NaN,
+};
 
-NotificationItemUnmemo.prototype = {
-    id: PropTypes.number.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-        __html: PropTypes.string,
-    }),
-    type: PropTypes.string.isRequired,
-    markAsRead:PropTypes.func.isRequired
-}
-NotificationItemUnmemo.defaultProps = {
-    markAsRead: function(){},
-}
-const NotificationItem = React.memo(NotificationItemUnmemo)
+NotificationItem.propTypes = {
+  type: PropTypes.string,
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  markAsRead: PropTypes.func,
+  id: PropTypes.number,
+};
 
-
-export {NotificationItem};
+export default NotificationItem;
