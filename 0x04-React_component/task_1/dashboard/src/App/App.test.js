@@ -55,6 +55,20 @@ describe('<App />', () => {
         });
     })
 
+    // it('Tests whether alert was called when ctrl-h is pressed', () => {
+    //   const logOut = jest.fn(() => {});
+
+    //   const alert = jest.spyOn(global, 'alert');
+
+    //   const wrapper = shallow(<App logOut={logOut} />);
+    //   wrapper.find(document)
+    //     .simulate('keydown', { key: 'h', ctrlKey: true })
+
+    //   expect(logOut).toHaveBeenCalled();
+    //   expect(alert).toHaveBeenCalled();
+
+    //   alert.mockRestore();
+    // });
 
     describe('Testing the eventHandler', () => {
         it('gets called, and alerts with the correct string', () => {
