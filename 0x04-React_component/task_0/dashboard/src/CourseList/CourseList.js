@@ -1,57 +1,32 @@
-import React from 'react';
-import { CourseListRow } from './CourseListRow';
+import React, { Component } from 'react';
+import CourseListRow from './CourseListRow';
 import './CourseList.css'
-import PropTypes from 'prop-types';
+import CourseShape from './CourseShape';
+import PropTypes from 'prop-types'
 
-import { CourseShape } from '../utils';
+function CourseList({ listCourses }){
 
-const CourseList = ({listCourses}) => {
-    
-
-    if (listCourses.length === 0) {
-        return (
-            <table id="CourseList">
-                <thead>
-                    <CourseListRow
-                        isHeader={true}
-                        textFirstCell="No course available yet"
-                    />
-                </thead>
-            </table>
-        )
+        if (listCourses.length === 0){
+            return(<div>No course available yet</div>)
+        }
+        return(
+        <table id='CourseList'>
+            <thead>
+            <CourseListRow isHeader={true} textFirstCell="Available courses"></CourseListRow>
+            <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true}></CourseListRow>
+            </thead>
+            <tbody>
+            {listCourses.map((course) => <CourseListRow key={course.id} textFirstCell={course.name} textSecondCell={course.credit}></CourseListRow>)}
+            </tbody>
+            </table>)
     }
 
-    return (
-        <table id="CourseList">
-            <thead><CourseListRow
-                    isHeader={true}
-                    textFirstCell="Available courses"
-                />
-                <CourseListRow
-                    isHeader={true}
-                    textFirstCell="Course name"
-                    textSecondCell="Credit"
-                /></thead>
-            <tbody>
-                {listCourses.map(item => {
-                    return (<CourseListRow
-                        key={item.id}
-                        isHeader={false}
-                        textFirstCell={item.name}
-                        textSecondCell={item.credit}
-                    />)
-                })}
-            </tbody>
+    CourseList.defaultProps = {
+        listCourses: []
+    };
 
-        </table>
-    )
-}
+    CourseList.propTypes = {
+        listCourses: PropTypes.arrayOf(CourseShape)
+    };
 
-CourseList.prototype = {
-    listCourses: PropTypes.arrayOf(CourseShape)
-}
-CourseList.defaultProps = {
-    listCourses: [],
-};
-
-export { CourseList };
+export default CourseList;

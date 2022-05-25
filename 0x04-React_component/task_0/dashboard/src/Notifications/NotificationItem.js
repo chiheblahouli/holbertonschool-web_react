@@ -1,38 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
-
- const NotificationItem = ({ type, value, html, markAsRead, id }) => {
-    if (html) {
-        return (
-            <li
-            type={type}
-            onClick={()=>markAsRead(id)}
-            dangerouslySetInnerHTML={html}>
-            </li>
-        )
+function Notificationitems(props){
+    if(props.html)
+    {
+        return(<li dangerouslySetInnerHTML={props.html} data-notification-type={props.type}></li>)
     }
-    return (
-        <li
-        onClick={()=>markAsRead(id)}
-        type={type}>
-            {value}
-        </li>
-    )
+    return (<li data-notification-type={props.type}>{props.value}</li>)
+    
 }
 
 
-NotificationItem.prototype = {
-    id: PropTypes.number.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-        __html: PropTypes.string,
-    }),
-    type: PropTypes.string.isRequired,
-    markAsRead:PropTypes.func.isRequired
-}
-NotificationItem.defaultProps = {
-    markAsRead: function(){},
-}
+Notificationitems.defaultProps = {
+    type : 'default',
+};
 
-export {NotificationItem};
+Notificationitems.PropTypes = {
+	html: PropTypes.shape({
+		__html: PropTypes.string,
+	}),
+    type : PropTypes.string.isRequired,
+    html : PropTypes.elementType
+};
+
+export default Notificationitems;

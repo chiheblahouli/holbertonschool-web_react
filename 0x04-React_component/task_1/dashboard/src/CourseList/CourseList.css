@@ -1,19 +1,18 @@
-
-
-
-.row th, .row td{
-
-    border-bottom:  2px solid rgb(221, 221, 221);
-    border-left:  2px solid rgb(221, 221, 221);
-    text-align: left;
-}
-
-.row th[colSpan='2']{
-    text-align: center;
-    border-left: 0px solid rgb(221, 221, 221);
-}
-
 #CourseList {
-    padding: 28px 28px;
-    padding-bottom: 350px;
-}
+
+    border: solid 1px gray;
+    width: 80vw;
+    margin-left: 3rem;
+    margin-right: 3rem;
+    margin-bottom: 25rem;
+    margin-top: 5rem;
+
+  }
+  th[colSpan] {
+    border-bottom: solid 0.10px gray;
+  }
+
+  th:nth-child(2), th:nth-child(1){
+    border-bottom: solid 0.10px gray;
+  }
+

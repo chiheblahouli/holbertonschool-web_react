@@ -1,45 +1,27 @@
+import { shallow } from "enzyme";
 import React from 'react';
-import { shallow } from 'enzyme';
-import { NotificationItem } from './NotificationItem';
-import { Notifications} from './Notifications'
+import Notificationitems from "./NotificationItem";
 
-describe('<NotificationItem />', () => {
-    it('NotificationItem renders without crashing', () => {
-        const wrapper = shallow(<NotificationItem />);
-        expect(wrapper).toHaveLength(1);
+describe('Notification item Component should render Li items without crashing', () => {
+    let wrapper = shallow(<Notificationitems />)
+    it('should render ',() => {
+       expect(wrapper.find("li").exists()).toBeTruthy() 
     });
 
-    /* Props testing  */
-    it('Correctly Renderding dummy props just for test purposes', () => {
-        const wrapper = shallow(<NotificationItem
-            type="default"
-            value="test"
-        />);
-        expect(wrapper.props().children).toBe("test");
-        expect(wrapper.text()).toBe("test");
-        expect(wrapper.props().type).toBe("default");
+    
+    it('should render ',() => {
+        const wrapper = shallow(<Notificationitems value={'value-test'} type={'default-test'} />)
+        expect(wrapper.find("li").text()).toMatch('value-test')
+     });
+
+    it('should render ',() => {
+        const wrapper = shallow(<Notificationitems value={'value-test'} type={'default-test'} />)
+        expect(wrapper.find("li").prop('data-notification-type')).toMatch('default-test')
+        });
+    
+    
+    it('should render ',() => {
+        const wrapper = shallow(<Notificationitems html={'<u>value-test<u>'} type={'default-test'} />)
+        expect(wrapper.find("li").prop('dangerouslySetInnerHTML')).toEqual({"__html": "<u>value-test<u>"})
     });
-    it('Correctly inject Html', () => {
-        const wrapper = shallow(<NotificationItem
-            html={{ __html: '<u>test</u>' }} />);
-        expect(wrapper.html()).toBe("<li><u>test</u></li>");
-    });
-    it('Unit test of the method markAsRead', ()=>{
-        const wrapper = shallow(<Notifications />);
-        const instance = wrapper.instance();
-        const markAsReadSpy =jest.fn();
-
-        const id = 14;
-        const wrapperx = shallow(<NotificationItem
-            type="urgent"
-            value = "test"
-            markAsRead = {markAsReadSpy}
-            id = {id} />);
-        wrapperx.simulate("click")
-        expect(markAsReadSpy).toHaveBeenCalledWith(14);
-        jest.restoreAllMocks();
-
-      })
-
-  
-});
+})

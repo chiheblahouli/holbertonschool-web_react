@@ -1,13 +1,17 @@
+import Footer from "./Footer";
+import {shallow} from 'enzyme';
 import React from 'react';
-import { shallow } from 'enzyme';
-import {Footer} from './Footer';
-
 
 
 describe('<Footer />', () => {
+    const wrapper = shallow(<Footer />);
 
-    it('Footer renders without crashing', () => {
-        const wrapper = shallow(<Footer />);
-        expect(wrapper.last().text()).toBe("Copyright 2021 - Holberton School");
+    it('renders Footer without crashing', () =>{
+        expect(wrapper.find('.Footer').exists()).toBeTruthy();
     });
+
+    it('Checks if the last paragraph exists with the text Copyright', ()=>{
+        expect(wrapper.find('.Footer').last().text()).toContain('Copyright')
+    });
+
 });

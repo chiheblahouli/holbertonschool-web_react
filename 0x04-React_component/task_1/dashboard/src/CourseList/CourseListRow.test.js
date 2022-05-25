@@ -1,43 +1,35 @@
+import CourseListRow from "./CourseListRow";
+import {shallow} from 'enzyme';
 import React from 'react';
-import { shallow } from 'enzyme';
-import PropTypes from 'prop-types';
-import { CourseListRow } from './CourseListRow';
+import '@testing-library/jest-dom/extend-expect'
 
 
-describe('<CourseList />', () => {
-    let wrapper;
-    beforeEach(() => {
-      wrapper = shallow(<CourseListRow />);
+
+
+describe('<CourseListRow />', () => {
+
+    it('renders <CourseListRow /> with  child th item', () => {
+        const wrapper = shallow(<CourseListRow textFirstCell={'requiredText'} isHeader={true}/>);
+        expect(wrapper.find('th').children()).toHaveLength(1)
+    });
+
+    it('Checks if the th element has colspan=2 attr', () => {
+        const wrapper = shallow(<CourseListRow textFirstCell={'requiredText'} isHeader={true}/>);
+        const element = wrapper.find('th')
+        const attru = element.getElement().props.colSpan;
+        expect(attru).toBe('2')
+
     });
     
-    it('Render a row with two cells win isHeader is False', () => {
-        wrapper.setProps({
-            textFirstCell: 'testFirstCell',
-            textSecondCell: 'testSecondCell'
-        });
-        expect(wrapper).toHaveLength(1);
-        expect(wrapper.html()).toBe("<tr class=\"row\"> <td>testFirstCell</td><td>testSecondCell</td> </tr>")
-    });
-    it('Renders two cells when Isheader true, andtextSecond is present', () => {
-        wrapper.setProps({ isHeader: true, textFirstCell: "firstCell", textSecondCell: "secondCell" });
-        expect(wrapper).toHaveLength(1);
-        expect(wrapper.html()).toBe("<tr class=\"row\"><th>firstCell</th><th>secondCell</th></tr>")
-    });
+    it('Tests when textSecondCell is present', () => {
+        const wrapper = shallow(<CourseListRow textFirstCell={'requiredText'} isHeader={true} textSecondCell={'not_required_but_here_i_am'}/>);
+        expect(wrapper.find('th').children()).toHaveLength(2)      
+    })
 
-
-    it('RenderOnly one cell when isHeader true', () => {
-        wrapper.setProps({ isHeader: true });
-        expect(wrapper).toHaveLength(1);
-        expect(wrapper.html()).toBe("<tr class=\"row\"><th colSpan=\"2\"></th></tr>")
-    });
-
-    it('RenderOnly one cell when isHeader true with colSpan = 2', () => {
-        wrapper.setProps({ isHeader: true });
-        expect(wrapper).toHaveLength(1);
-        expect(wrapper.children()).toHaveLength(1);
-        expect(wrapper.html().includes("colSpan=\"2\"")).toBeTruthy()
-    });
     
-   
+    it('Tests when textSecondCell is present', () => {
+        const wrapper = shallow(<CourseListRow textFirstCell={'requiredText'} isHeader={false} textSecondCell={'not_required_but_here_i_am'}/>);
+        expect(wrapper.find('tr td').children()).toHaveLength(2)      
+    })
+
 });
-

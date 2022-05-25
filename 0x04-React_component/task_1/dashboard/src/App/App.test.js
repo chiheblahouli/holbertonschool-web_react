@@ -1,101 +1,42 @@
-import React from 'react';
-import { shallow, mount } from 'enzyme';
+import {shallow} from 'enzyme';
 import App from './App';
-import { CourseList } from '../CourseList/CourseList'
-import { LoginComponent } from '../Login/Login';
-import { Footer } from '../Footer/Footer';
-import { Notifications } from '../Notifications/Notifications'
+import React from 'react';
+import CourseList from '../CourseList/CourseList'
+
 describe('<App />', () => {
-    let wrapper;
-    beforeAll(() => {
-        return wrapper = shallow(<App />);
+    const wrapper = shallow(<App />);
+    it('renders <App /> components without crashing', () => {
+      expect(wrapper.find('.App').exists()).toBeTruthy()
     });
 
-    it('App renders without crashing', () => {
-        expect(wrapper).toHaveLength(1);
+    it('renders Notifications components without crashing', () => {
+        expect(wrapper.find('Notifications').exists()).toBeTruthy()
+      });
+
+    it('renders a Header without crashing', () =>{
+        expect(wrapper.find('Header').exists()).toBeTruthy()
     });
 
-    it('render 4 components', () => {
-        expect(wrapper.find('.container').children()).toHaveLength(4);
-    })
-
-    test('<CourseList /> rendred when logedin is false', () => {
-        const wrapper = shallow(<App />);
-
-        wrapper.setProps({ "isLoggedIn": false });
-        expect(wrapper).toHaveLength(1);
-        expect(wrapper.containsMatchingElement(<CourseList />)).toBeFalsy()
+    it('renders Login without crashing', () =>{
+        expect(wrapper.find('Login').exists()).toBeTruthy()
     });
-    it('<CourseList /> is not rendred when logedin is false', () => {
-        wrapper.setProps({ "isLoggedIn": false });
-        expect(wrapper.containsMatchingElement(<CourseList />)).toBeFalsy()
+
+    it('renders Footer without crashing', () =>{
+        expect(wrapper.find('Footer').exists()).toBeTruthy();
+    });
+
+    it('CourseList  do  not exist when isloggedin true', () =>{
+        const wrapper = shallow(<App isLoggedIn={false}/>);
+        expect(wrapper.find(CourseList).exists()).toBeFalsy(); 
+    
     });
 
 
-    describe('IsLogedin: true', () => {
-        let wrapper;
-        wrapper = shallow(<App />);
-        wrapper.setProps({ "isLoggedIn": true });
-        it('<Login /> is not rendred when logedin is true', () => {
-            expect(wrapper.containsMatchingElement(<LoginComponent />)).toBeFalsy();
-        });
-
-        it('<Notifications /> is  rendred when logedin is true', () => {
-            let wrapper;
-            wrapper = shallow(<App />);
-            wrapper.setProps({
-                "isLoggedin": true,
-                "listCourses": [
-                    { id: 1, name: 'ES6', credit: 60 },
-                    { id: 2, name: 'Webpack', credit: 20 },
-                    { id: 3, name: 'React', credit: 40 }
-                ]
-            });
-            expect(wrapper.containsMatchingElement(<Notifications />)).toBeFalsy();
-        });
-    })
-
-    // it('Tests whether alert was called when ctrl-h is pressed', () => {
-    //   const logOut = jest.fn(() => {});
-
-    //   const alert = jest.spyOn(global, 'alert');
-
-    //   const wrapper = shallow(<App logOut={logOut} />);
-    //   wrapper.find(document)
-    //     .simulate('keydown', { key: 'h', ctrlKey: true })
-
-    //   expect(logOut).toHaveBeenCalled();
-    //   expect(alert).toHaveBeenCalled();
-
-    //   alert.mockRestore();
-    // });
-
-    describe('Testing the eventHandler', () => {
-        it('gets called, and alerts with the correct string', () => {
-            const eventListener = jest.spyOn(document, 'addEventListener');
-            //const alert = jest.spyOn(global, 'alert');
-            const wrapper = shallow(<App />);
-            wrapper.simulate('keydown', { key: 'h', ctrlKey: true })
-
-            expect(eventListener).toHaveBeenCalled();
-            //expect(alert).toHaveBeenCalled();
-            jest.restoreAllMocks();
-
-        });
-    })
-    it("when the keys control and h are pressed the logOut function, passed as a prop, is called and the alert function is called with the string Logging you out", () => {
-        const events = {};
-        const logout = jest.fn();
-
-        document.addEventListener = jest.fn((event, cb) => {
-            events[event] = cb;
-        });
-        
-        window.alert = jest.fn();
-        shallow(<App logOut={logout} />);
-        events.keydown({ key: "h", ctrlKey: true });
-        expect(window.alert).toHaveBeenCalledWith("Logging you out");
-        expect(logout).toHaveBeenCalled();
-        jest.restoreAllMocks();
-    });
+    // verify that when the keys control and h are pressed the logOut function passed as props is called
+    it('verify that when the keys control and h are pressed the logOut function passed as props is called', () =>{
+        const wrapper = shallow(<App isLoggedIn={true} logOut={() => {}}/>);
+        wrapper.find('App').simulate('keydown', {ctrlKey: true, key: 'h'});
+        expect(wrapper.instance().props.logOut).toHaveBeenCalled(); 
+    }
+    );    
 });
