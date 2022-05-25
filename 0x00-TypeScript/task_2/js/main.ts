@@ -1,64 +1,84 @@
 interface DirectorInterface {
-    workFromHome(): string;
-    getCoffeeBreak(): string;
-    workDirectorTasks(): string;
-  }
-  
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workDirectorTasks(): string;
+}
+
 interface TeacherInterface {
-    workFromHome(): string;
-    getCoffeeBreak(): string;
-    workTeacherTasks(): string;
-  }
-  
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workTeacherTasks(): string;
+}
+
 export class Director implements DirectorInterface {
-    workFromHome(): string {
-      return "Working from home";
-    }
-  
-    getCoffeeBreak(): string {
-      return "Getting a coffee break";
-    }
-  
-    workDirectorTasks(): string {
-      return "Getting to director tasks";
-    }
-  }
-  
-  export class Teacher implements TeacherInterface {
-    workFromHome(): string {
-      return "Cannot work from home";
-    }
-    getCoffeeBreak(): string {
-      return "Cannot have a break";
-    }
-    workTeacherTasks(): string {
-      return "Getting to work";
-    }
-  }
-  
-  export function createEmployee(salary: number | string): Teacher | Director {
-    if (typeof salary === "number" && salary < 500) return new Teacher();
-    return new Director();
+  workFromHome(): string {
+    console.log("Working from home");
+    return "Working from home";
   }
 
-  export function isDirector(employee: (Director | Teacher)): employee is Director{
-        return (employee as Director) instanceof Director;
+  getCoffeeBreak(): string {
+    console.log("Getting a coffee break");
+    return "Getting a coffee break";
   }
 
-  export function executeWork(employee: DirectorInterface | TeacherInterface): string {
-    if(isDirector(employee)){
-      return employee.workDirectorTasks();
-    }else {
-      return employee.workTeacherTasks();
-    }
+  workDirectorTasks(): string {
+    console.log("Getting to director tasks");
+    return "Getting to director tasks";
+  }
+}
+
+export class Teacher implements TeacherInterface {
+  workFromHome(): string {
+    return "Cannot work from home";
+  }
+  getCoffeeBreak(): string {
+    return "Cannot have a break";
+  }
+  workTeacherTasks(): string {
+    return "Getting to work";
+  }
+}
+
+export function createEmployee(salary: number | string): Teacher | Director {
+  if (typeof salary === "number" && salary < 500) return new Teacher();
+
+  return new Director();
+}
+
+// console.log(createEmployee(200));
+// console.log(createEmployee(1000));
+// console.log(createEmployee("$500"));
+
+export function isDirector(employee: TeacherInterface | DirectorInterface): employee is Director {
+  return (employee as Director).workDirectorTasks !== undefined;
+}
+
+export function executeWork(employee: DirectorInterface | TeacherInterface): string {
+  let msg;
+
+  if (isDirector(employee)) {
+    msg = employee.workDirectorTasks();
+  } else {
+    msg = employee.workTeacherTasks();
   }
 
-  type Subjects = "Math" | "History";
+  console.log(msg);
+  return msg;
+}
 
-  export function teachClass(todayClass:Subjects): string {
-    if (todayClass === "Math") {
-      return "Teaching Math";
-    } else if (todayClass === "History") {
-      return "Teaching History";
-    }
+// executeWork(createEmployee(200));
+// executeWork(createEmployee(1000));
+
+type Subjects = "Math" | "History";
+
+export function teachClass(todayClass:Subjects): string {
+  if (todayClass === "Math") {
+    return "Teaching Math";
+  } else if (todayClass === "History") {
+    return "Teaching History";
   }
+}
+
+// console.log(teachClass("Math"));
+
+// console.log(teachClass("History"));
