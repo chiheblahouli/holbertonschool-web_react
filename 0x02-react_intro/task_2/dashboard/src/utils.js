@@ -6,6 +6,4 @@ export const getLatestNotification = () =>{ return {__html: '<strong>Urgent requ
 
 
 
- /* function that fetch api */
-
-        
+ 
