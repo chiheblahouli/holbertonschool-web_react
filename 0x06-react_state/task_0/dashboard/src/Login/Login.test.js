@@ -1,36 +1,28 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import Login from './Login';
-import { StyleSheetTestUtils } from 'aphrodite';
+import { shallow } from "enzyme";
+import React from "react";
+import Login from "./Login";
+import { StyleSheetTestUtils } from "aphrodite";
 
-StyleSheetTestUtils.suppressStyleInjection();
+describe("<Login />", () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-describe('<Login />', () => {
-    it('renders a <Login /> component', () => {
-        const wrapper = shallow(<Login />);
-        expect(wrapper).toHaveLength(1);
-    });
-
-    it('renders a <Login /> component and checks contents', () => {
-        const wrapper = shallow(<Login />);
-        expect(wrapper.find('div.App-login input')).toHaveLength(3);
-        expect(wrapper.find('div.App-login label')).toHaveLength(2);
-    });
-
-  
-    it('submit button is desabled by default', () => {
-        const wrapper = shallow(<Login />);
-        const submitInput = wrapper.find('input[type="submit"]')
-       
-        expect(submitInput.prop('disabled')).toBeTruthy();
-    });
-
-    it('submit button is enabled after the two inputs not empty', () => {
-        const wrapper = shallow(<Login />);
-        const submitInput = wrapper.find({ type: 'submit' })
-        wrapper.find("input").at(0).simulate("change",{target: { name: 'email', value: 'thedudeabides@lebowski.com' } });
-        wrapper.find("input").at(1).simulate("change",{target: { name: 'password', value: 'thedudeabides@lebowski.com' } });
-        expect(wrapper.find({ type: 'submit' }).prop("disabled")).toBe(false);
-    });
-
+  it("Login renders without crashing", () => {
+    const wrapper = shallow(<Login />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render 2 input", () => {
+    const wrapper = shallow(<Login />);
+    wrapper.update();
+    expect(wrapper.find("div input")).toHaveLength(2);
+  });
+  it("Verify that the components render 2 label", () => {
+    const wrapper = shallow(<Login />);
+    wrapper.update();
+    expect(wrapper.find("div label")).toHaveLength(2);
+  });
 });

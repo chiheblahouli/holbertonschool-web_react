@@ -1,12 +1,12 @@
 import React from "react";
 import CourseListRow from "./CourseListRow";
-import CourseShape from "./CourseShape";
 import PropTypes from "prop-types";
-import { StyleSheet, css } from 'aphrodite';
+import CourseShape from "./CourseShape";
+import { StyleSheet, css } from "aphrodite";
 
-const CourseList = ({ listCourses }) => {
+function CourseList({ listCourses }) {
   return (
-    <table className={css(styles.courseListStyle)}>
+    <table id="CourseList" className={css(styles.list)}>
       <thead>
         <CourseListRow textFirstCell="Available courses" isHeader={true} />
         <CourseListRow
@@ -16,37 +16,45 @@ const CourseList = ({ listCourses }) => {
         />
       </thead>
       <tbody>
-        {listCourses.length === 0 ? (
-          <CourseListRow textFirstCell="No course available yet" />
-        ) : (
-          listCourses.map((course) => (
-            <CourseListRow
-              key={course.id}
-              textFirstCell={course.name}
-              textSecondCell={course.credit}
-            />
-          ))
+        {listCourses.length === 0 && (
+          <CourseListRow
+            textFirstCell="No course available yet"
+            isHeader={false}
+          />
         )}
+
+        {listCourses.map((course) => (
+          <CourseListRow
+            key={course.id}
+            textFirstCell={course.name}
+            textSecondCell={course.credit}
+            isHeader={false}
+          />
+        ))}
       </tbody>
     </table>
   );
+}
+
+CourseList.defaultProps = {
+  listCourses: [],
 };
 
 CourseList.propTypes = {
   listCourses: PropTypes.arrayOf(CourseShape),
 };
 
-CourseList.defaultProps = {
-  listCourses: [],
+const cssVars = {
+  borderTableColor: "rgb(170, 170, 170);",
 };
 
 const styles = StyleSheet.create({
-  courseListStyle: {
-    width: '90%',
-    margin: '40px auto 150px auto',
-    minHeight: 150,
-    border: '1px solid grey',
-  }
-})
+  list: {
+    border: `1px solid ${cssVars.borderTableColor}`,
+    borderCollapse: "collapse",
+    width: "95%",
+    margin: "40px auto 0 auto",
+  },
+});
 
 export default CourseList;

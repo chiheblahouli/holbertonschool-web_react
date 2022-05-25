@@ -1,40 +1,89 @@
-import React from 'react';
-import { shallow, mount } from 'enzyme';
-import Header from './Header';
-import { StyleSheetTestUtils } from 'aphrodite';
-import { MyContext } from '../App/AppContext';
+import { shallow, mount } from "enzyme";
+import React from "react";
+import Header from "./Header";
+import { StyleSheetTestUtils } from "aphrodite";
+import AppContext, { user, logOut } from "../App/AppContext";
 
-StyleSheetTestUtils.suppressStyleInjection();
+describe("<Header />", () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-describe('<Header />', () => {
-    it('renders a <Header /> component', () => {
-        const value = { user: { email: '', password: '', isLoggedIn: true }, logOut: () => { } }
+  it("Header renders without crashing", () => {
+    const wrapper = mount(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render img", () => {
+    const wrapper = mount(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    wrapper.update();
+    expect(wrapper.find("div img")).toHaveLength(1);
+  });
+  it("Verify that the components render h1", () => {
+    const wrapper = mount(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    wrapper.update();
+    expect(wrapper.find("div h1")).toHaveLength(1);
+  });
 
-        const wrapper = mount(<MyContext.Provider value={value}><Header /></MyContext.Provider>);
-        expect(wrapper).toHaveLength(1);
-    });
+  it("mounts the Header component with a default context value. The logoutSection is not created", () => {
+    const wrapper = mount(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Header />
+      </AppContext.Provider>
+    );
 
+    expect(wrapper.find("#logoutSection")).toHaveLength(0);
+  });
 
-    it('renders a <Header /> component and checks contents', () => {
-        const value = { user: { email: '', password: '', isLoggedIn: false }, logOut: () => { } }
-        const wrapper = mount(<MyContext.Provider value={value}><Header /></MyContext.Provider>);
-        expect(wrapper.find('header h1')).toHaveLength(1);
-        expect(wrapper.find('header img')).toHaveLength(1);
-    });
+  it("mounts the Header component with a user defined (isLoggedIn is true and an email is set). The logoutSection is created", () => {
+    const wrapper = mount(
+      <AppContext.Provider
+        value={{ user: { ...user, isLoggedIn: true }, logOut }}
+      >
+        <Header />
+      </AppContext.Provider>
+    );
 
-    it('Check logoutSection is created', () => {
-        const value = { user: { email: 'test@test.fr', password: 'test', isLoggedIn: true, logOut: () => { } }, logOut: () => { } }
-        const wrapper = mount(<MyContext.Provider value={value}><Header /></MyContext.Provider>);
-        expect(wrapper.find('#logoutSection')).toHaveLength(1);
-    });
-    it('Check logout() is called', () => {
-        
-        const value = { user: { email: 'test@test.fr', password: 'test', isLoggedIn: true, logOut: () => { } }, logOut: () => { } }
-        const logOutSpy = jest.spyOn(value, 'logOut');
-        const wrapper = mount(<MyContext.Provider value={value}><Header /></MyContext.Provider>);
-        wrapper.find('#logoutSection a').simulate("click");
-        expect(logOutSpy).toBeCalled();
-    });
+    expect(wrapper.find("#logoutSection")).toHaveLength(1);
+  });
 
-    
+  it("mounts the Header component with a user defined (isLoggedIn is true and an email is set) and the logOut is linked to a spy. Verify that clicking on the link is calling the spy", () => {
+    const logOutSpy = jest.fn();
+
+    const wrapper = mount(
+      <AppContext.Provider
+        value={{
+          user: {
+            email: "Larry@hudson.com",
+            password: "123456789",
+            isLoggedIn: true,
+          },
+          logOut: logOutSpy,
+        }}
+      >
+        <Header />
+      </AppContext.Provider>
+    );
+
+    expect(wrapper.find("#logoutSection")).toHaveLength(1);
+    wrapper.find("#logoutSection span").simulate("click");
+
+    expect(logOutSpy).toHaveBeenCalled();
+
+    jest.restoreAllMocks();
+  });
 });
