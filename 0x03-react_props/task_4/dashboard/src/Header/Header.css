@@ -1,26 +1,14 @@
-.App-header{
-    display: flex;
-    flex-direction: row;
-    text-align: center;
-    align-items: center;
-    border-bottom: 5px solid #EB0045;
-    height: 160px;
-  }
-  
-  
-  
-  .App-header img{
-    height:120px;
-    width:200px;
-    flex:0.1;
-  }
-  
-  .App-header h1 {
-    text-align: center;
-    color:#EB0045;
-    margin: 0 38px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 800;
-  
-  
-  }
+:root {
+  --main-color: #e01d3f;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  color: var(--main-color);
+  font-size: 20px;
+}
+
+.header img {
+  width: 200px;
+}

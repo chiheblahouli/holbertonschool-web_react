@@ -1,4 +1,5 @@
 import {
+  LOGIN,
   LOGOUT,
   DISPLAY_NOTIFICATION_DRAWER,
   HIDE_NOTIFICATION_DRAWER,
@@ -6,45 +7,48 @@ import {
   LOGIN_FAILURE,
 } from "../actions/uiActionTypes";
 
-const initialState = {
+export const initialState = {
   isNotificationDrawerVisible: false,
   isUserLoggedIn: false,
   user: {},
 };
 
-export default function uiReducer(state = initialState, action) {
-  switch (action) {
-    case DISPLAY_NOTIFICATION_DRAWER: {
+const uiReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case DISPLAY_NOTIFICATION_DRAWER:
       return {
         ...state,
         isNotificationDrawerVisible: true,
       };
-    }
-    case HIDE_NOTIFICATION_DRAWER: {
+
+    case HIDE_NOTIFICATION_DRAWER:
       return {
         ...state,
         isNotificationDrawerVisible: false,
       };
-    }
-    case LOGIN_SUCCESS: {
+
+    case LOGIN_SUCCESS:
       return {
         ...state,
         isUserLoggedIn: true,
       };
-    }
-    case LOGIN_FAILURE: {
+
+    case LOGIN_FAILURE:
       return {
         ...state,
         isUserLoggedIn: false,
       };
-    }
-    case LOGOUT: {
+
+    case LOGOUT:
       return {
         ...state,
         isUserLoggedIn: false,
       };
-    }
+
     default:
-      return state;
+      break;
   }
-}
+  return state;
+};
+
+export default uiReducer;

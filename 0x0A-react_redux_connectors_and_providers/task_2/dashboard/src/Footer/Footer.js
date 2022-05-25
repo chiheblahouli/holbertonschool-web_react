@@ -1,36 +1,31 @@
 import React from "react";
-import { getFullYear, getFooterCopy } from "../utils/utils";
-import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { getFullYear, getFooterCopy } from "../utils/utils";
 import PropTypes from "prop-types";
 
-const Footer = ({ user }) => {
+export function Footer({ user }) {
   return (
-    <footer className={css(styles.footerStyle)}>
+    <div className="footer">
       <p>
         Copyright {getFullYear()} - {getFooterCopy(true)}
       </p>
-      {user && user.email && user.password && (
-        <p>
-          <a>Contact Us</a>
-        </p>
-      )}
-    </footer>
+      {user && <a href="#">Contact us</a>}
+    </div>
   );
+}
+
+Footer.defaultProps = {
+  user: null,
 };
 
-const styles = StyleSheet.create({
-  footerStyle: {
-    maxHeight: "10vh",
-    textAlign: "center",
-    fontStyle: "italic",
-  },
-});
+Footer.propTypes = {
+  user: PropTypes.object,
+};
 
-Footer.propTypes = { user: PropTypes.object };
-Footer.defaultProps = { user: {} };
+const mapStateToProps = (state) => {
+  return {
+    user: state.get("user"),
+  };
+};
 
-const mapStateToProps = (state) => ({ user: state.toJS().user });
-const ConnectedFooter = connect(mapStateToProps)(Footer);
-export default Footer;
-export { ConnectedFooter };
+export default connect(mapStateToProps, null)(Footer);

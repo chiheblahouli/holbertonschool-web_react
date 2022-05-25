@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,84 +16,88 @@ export default class Login extends Component {
 
   handleLoginSubmit(event) {
     event.preventDefault();
-    this.props.logIn(this.state.email, this.state.password);
+
+    const { email, password } = this.state;
+
+    this.props.logIn(email, password);
   }
 
   handleChangeEmail(event) {
-    this.setState({ email: event.target.value }, () => {
-      if (this.state.email !== "" && this.state.password !== "")
-        this.setState({ enableSubmit: true });
-    });
+    const { value } = event.target;
+    const { password } = this.state;
+
+    if (value !== "" && password !== "") this.setState({ enableSubmit: true });
+    else this.setState({ enableSubmit: false });
+
+    this.setState({ email: event.target.value });
   }
 
   handleChangePassword(event) {
-    this.setState({ password: event.target.value }, () => {
-      if (this.state.email !== "" && this.state.password !== "")
-        this.setState({ enableSubmit: true });
-    });
+    const { value } = event.target;
+    const { email } = this.state;
+
+    if (email !== "" && value !== "") this.setState({ enableSubmit: true });
+    else this.setState({ enableSubmit: false });
+
+    this.setState({ password: event.target.value });
   }
 
   render() {
     return (
-      <div className="App-login">
-        <div className={css(styles.loginStyle)}>
-          <p className={css(styles.loginPStyle)}>
-            Login to access the full dashboard
-          </p>
-          <form
-            className={css(styles.loginFormStyle)}
-            onSubmit={this.handleLoginSubmit}
-          >
-            <label className={css(styles.smallLabel)}>
-              Email:
-              <input
-                type="text"
-                name="email"
-                value={this.state.email}
-                onChange={this.handleChangeEmail}
-              />
-            </label>
-            <label className={css(styles.smallLabel)}>
-              Password:
-              <input
-                type="text"
-                name="password"
-                value={this.state.password}
-                onChange={this.handleChangePassword}
-              />
-            </label>
-            <input type="submit" value="Submit" disabled={!this.state.enableSubmit}/>
-          </form>
-        </div>
+      <div className={css(styles.login)}>
+        <p>Login to access the full dashboard</p>
+        <form action="" onSubmit={this.handleLoginSubmit}>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className={css(styles.loginInput)}
+            value={this.state.email}
+            onChange={this.handleChangeEmail}
+          />
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            className={css(styles.loginInput)}
+            value={this.state.password}
+            onChange={this.handleChangePassword}
+          />
+          <input type="submit" disabled={!this.state.enableSubmit} />
+        </form>
       </div>
     );
   }
 }
 
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
+
 const styles = StyleSheet.create({
-  loginStyle: {
-    minHeight: 150,
-    margin: "40px auto 150px auto",
-    "@media (max-width: 900px)": {
-      minHeight: 0,
-      margin: 0,
+  login: {
+    margin: "50px",
+    flexGrow: 1,
+    [screenSize.small]: {
+      marginTop: "10px",
+      marginLeft: 0,
+      marginRight: 0,
+      marginBottom: 0,
     },
   },
 
-  loginPStyle: {
-    margin: "3rem 0rem 0rem 2rem",
-    "@media (max-width: 900px)": {
-      marginTop: 0,
-    },
-  },
-
-  loginFormStyle: {
-    margin: "1rem 0rem 2rem 2rem",
-  },
-
-  smallLabel: {
-    "@media (max-width: 900px)": {
+  loginInput: {
+    marginLeft: "10px",
+    marginRight: "20px",
+    [screenSize.small]: {
       display: "block",
+      marginLeft: 0,
+      marginTop: "10px",
+      marginBottom: "10px",
     },
   },
 });
+
+export default Login;

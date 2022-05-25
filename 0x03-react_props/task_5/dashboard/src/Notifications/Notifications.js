@@ -1,60 +1,58 @@
-import React from 'react';
-import './Notifications.css';
-import closeIcon from '../assets/closeIcon.png';
-import { NotificationItem } from './NotificationItem';
-import PropTypes from 'prop-types'
-import { NotificationItemShape } from '../utils';
+import React from "react";
+import NotificationItem from "./NotificationItem";
+import PropTypes from "prop-types";
+import NotificationItemShape from "./NotificationItemShape";
+import "./Notifications.css";
+import closeIcon from "../assets/close-icon.png";
 
-const Notifications = ({ displayDrawer, listNotifications }) => (
+const Notifications = ({ displayDrawer, listNotifications }) => {
+  return (
+    <>
+      <div className="menuItem">
+        <p>Your notifications</p>
+      </div>
+      {displayDrawer && (
+        <div className="Notifications">
+          <button
+            style={{
+              background: "transparent",
+              border: "none",
+              position: "absolute",
+              right: 20,
+            }}
+            aria-label="close"
+          >
+            <img src={closeIcon} alt="close-icon" />
+          </button>
+          <p>Here is the list of notifications</p>
+          <ul>
+            {listNotifications.length === 0 && (
+              <NotificationItem value="No new notification for now" />
+            )}
 
-    <div className="containerx">
-        <div className="menuItem">
-            Your notifications
+            {listNotifications.map((notification) => (
+              <NotificationItem
+                key={notification.id}
+                type={notification.type}
+                value={notification.value}
+                html={notification.html}
+              />
+            ))}
+          </ul>
         </div>
-
-        {(displayDrawer && listNotifications.length === 0 && "no new Notifications") || (displayDrawer && <div className="Notifications" style={{ "paddingBottom": "18px" }}>
-
-            <div style={{ "padding": "18px", "display": "flex", "justifyContent": "space-between" }}>
-                {displayDrawer && <p style={{ "fontSize": "12px" }}>
-                    Here is the lists of notifications
-                </p>}
-                <button
-                    type="submit"
-                    aria-label="Close"
-                    onClick={() => console.log("Close button has been clicked")}
-                >
-                    <img src={closeIcon} alt="" width="24" height="10" />
-                </button>
-            </div>
-
-            <div style={{ "padding": "0 18px" }} className="list">
-
-                {displayDrawer && <ul style={{ "padding": "0 18px" }} className="listNotificationItems">
-                {listNotifications.map(item=> {
-                    return(
-                        <NotificationItem
-                        key={item.id}
-                        type={item.default}
-                        value={item.value}
-                        html={item.html || ''}
-                        />
-                    )
-                })}
-                </ul>}
-            </div>
-        </div>)}
-
-    </div>)
-
-Notifications.prototype = {
-    displayDrawer: PropTypes.bool,
-    listNotifications: PropTypes.arrayOf(NotificationItemShape)
-}
-
-Notifications.defaultProps = {
-    displayDrawer: false,
-    listNotifications:[]
-
+      )}
+    </>
+  );
 };
 
-export { Notifications };
+Notifications.defaultProps = {
+  displayDrawer: false,
+  listNotifications: [],
+};
+
+Notifications.propTypes = {
+  displayDrawer: PropTypes.bool,
+  listNotifications: PropTypes.arrayOf(NotificationItemShape),
+};
+
+export default Notifications;

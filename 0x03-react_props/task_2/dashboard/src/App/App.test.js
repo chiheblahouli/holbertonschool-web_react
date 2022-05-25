@@ -1,15 +1,30 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import App from './App';
+import { shallow } from "enzyme";
+import React from "react";
+import App from "./App";
 
-describe('<App />', () => {
-  it('App renders without crashing', () => {
+describe("<App />", () => {
+  it("App renders without crashing", () => {
     const wrapper = shallow(<App />);
-    expect(wrapper).toHaveLength(1);
-	});
-
-  it('render 4 components', ()=> {
-    const wrapper = shallow(<App />)
-    expect(wrapper.find('.container').children()).toHaveLength(4);
-  })
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("should contain the Notifications component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Notifications")).toHaveLength(1);
+  });
+  it("should contain the Header component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Header")).toHaveLength(1);
+  });
+  it("should contain the Login component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Login")).toHaveLength(1);
+  });
+  it("should contain the Footer component", () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find("Footer")).toHaveLength(1);
+  });
 });

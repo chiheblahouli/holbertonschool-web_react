@@ -1,47 +1,62 @@
 import React, { Component } from "react";
-import logo from "../assets/holberton-logo.jpg";
+import holberton_logo from "../assets/holberton_logo.jpg";
 import { StyleSheet, css } from "aphrodite";
-import { AppContext } from "../App/AppContext";
+import AppContext from "../App/AppContext";
 
-export default class Header extends Component {
+class Header extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    let value = this.context;
+    const { user, logOut } = this.context;
+
     return (
-      <>
-        <header className={css(styles.headerStyle)}>
-          <img src={logo} className={css(styles.logoStyle)} alt="logo" />
-          <h1 className={css(styles.titleStyle)}>School dashboard</h1>
-        </header>
-        {value.user.isLoggedIn && (
-          <section id="logoutSection">
-            <h1>Welcome {value.user.email} <a className={css(styles.italicText)} onClick={value.logOut}>(logout)</a></h1>
-        </section>
-          )}
-      </>
+      <div className={css(styles.header)}>
+        <img src={holberton_logo} className={css(styles.headerImg)} />
+        <h1>School dashboard</h1>
+
+        {user.isLoggedIn && (
+          <p id="logoutSection" className={css(styles.logoutSection)}>
+            Welcome <b>{`${user.email} `}</b>
+            <span onClick={logOut} className={css(styles.logoutSectionSpan)}>
+              (logout)
+            </span>
+          </p>
+        )}
+      </div>
     );
   }
 }
-Header.contextType = AppContext;
+
+const cssVars = {
+  mainColor: "#e01d3f",
+};
 
 const styles = StyleSheet.create({
-  headerStyle: {
+  header: {
     display: "flex",
     alignItems: "center",
-    height: "25vh",
-    minHeight: 150,
+    color: cssVars.mainColor,
+    fontSize: "20px",
   },
 
-  logoStyle: {
-    height: "100%",
+  headerImg: {
+    width: "200px",
   },
-
-  titleStyle: {
-    color: "#E0344B",
-    fontSize: "2.5rem",
-    marginLeft: "1rem",
+  logoutSection: {
+    color: "black",
+    position: "absolute",
+    right: 0,
+    paddingRight: "20px",
+    alignSelf: "flex-end",
   },
-
-  italicText: {
-    fontStyle: 'italic',
-  }
+  logoutSectionSpan: {
+    fontStyle: "italic",
+    cursor: "pointer",
+  },
 });
+
+Header.contextType = AppContext;
+
+export default Header;

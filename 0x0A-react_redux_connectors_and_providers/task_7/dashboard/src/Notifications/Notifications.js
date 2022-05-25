@@ -1,90 +1,125 @@
-import React, { PureComponent } from "react";
-import NotificationItem from "./NotificationItem";
-import icon from "../assets/close-icon.png";
-import PropTypes from "prop-types";
-import { StyleSheet, css } from "aphrodite";
+import React, { PureComponent, Component } from "react";
 import { connect } from "react-redux";
-import { fetchNotifications } from "../actions/notificationActionCreators";
+import {
+  fetchNotifications,
+  markAsAread,
+} from "../actions/notificationActionCreators";
+import NotificationItem from "./NotificationItem";
+import { getUnreadNotifications } from "../selectors/notificationSelector";
+import PropTypes from "prop-types";
+import closeIcon from "../assets/close-icon.png";
+import { StyleSheet, css } from "aphrodite";
 
-export default class Notifications extends PureComponent {
+export class Notifications extends Component {
   constructor(props) {
     super(props);
   }
 
-  static propTypes = {
-    displayDrawer: PropTypes.bool,
-    listNotifications: PropTypes.array,
-    handleDisplayDrawer: PropTypes.func,
-    handleHideDrawer: PropTypes.func,
-  };
-
-  static defaultProps = {
-    displayDrawer: false,
-    listNotifications: [],
-    handleDisplayDrawer: () => {},
-    handleHideDrawer: () => {},
-  };
-
-  shouldMenuBeHidden() {
-    return this.props.displayDrawer ? true : false;
-  }
-
   componentDidMount() {
-    fetchNotifications();
+    this.props.fetchNotifications();
   }
 
   render() {
-    const menuItemClassName = css(
-      styles.menuItemStyle,
-      this.shouldMenuBeHidden() && styles.displayNone
+    const {
+      displayDrawer,
+      listNotifications,
+      handleDisplayDrawer,
+      handleHideDrawer,
+      markNotificationAsRead,
+    } = this.props;
+
+    const menuPStyle = css(
+      displayDrawer ? styles.menuItemPNoShow : styles.menuItemPShow
     );
+
     return (
       <>
         <div
-          className={`menuItem ${menuItemClassName}`}
-          onClick={this.props.handleDisplayDrawer}
+          className={css(styles.menuItem)}
+          id="menuItem"
+          onClick={handleDisplayDrawer}
         >
-          Your notifications
+          <p className={menuPStyle}>Your notifications</p>
         </div>
-        {this.props.displayDrawer && (
-          <div className={css(styles.notificationPanelStyle)}>
-            <div className="Notifications">
-              {this.props.listNotifications.length > 0 ? (
-                <>
-                  <p style={{ display: "inline" }}>
-                    Here is the list of notifications
-                  </p>
-                  <button
-                    style={{ float: "right" }}
-                    aria-label="Close"
-                    onClick={this.props.handleHideDrawer}
-                  >
-                    <img src={icon} alt="" style={{ height: "3vh" }} />
-                  </button>
-                  <ul className={css(styles.listStyle)}>
-                    {this.props.listNotifications.map((notification, index) => (
-                      <NotificationItem
-                        key={index}
-                        type={notification.type}
-                        value={notification.value}
-                        html={notification.html}
-                        // markNotificationAsRead={() => {
-                        //   this.props.markNotificationAsRead(notification.id);
-                        // }}
-                      />
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <p>No new notification for now</p>
+        {displayDrawer && (
+          <div className={css(styles.notifications)} id="Notifications">
+            <button
+              style={{
+                background: "transparent",
+                border: "none",
+                position: "absolute",
+                right: 20,
+              }}
+              aria-label="close"
+              onClick={handleHideDrawer}
+              id="closeNotifications"
+            >
+              <img
+                src={closeIcon}
+                alt="close-icon"
+                className={css(styles.notificationsButtonImage)}
+              />
+            </button>
+            <p className={css(styles.notificationsP)}>
+              Here is the list of notifications
+            </p>
+            <ul className={css(styles.notificationsUL)}>
+              {(!listNotifications || listNotifications.count() === 0) && (
+                <NotificationItem
+                  type="noNotifications"
+                  value="No new notifications for now"
+                />
               )}
-            </div>
+
+              {listNotifications &&
+                listNotifications.valueSeq().map((notification) => {
+                  let html = notification.get("html");
+
+                  if (html) html = html.toJS();
+
+                  return (
+                    <NotificationItem
+                      key={notification.get("guid")}
+                      id={notification.get("guid")}
+                      type={notification.get("type")}
+                      value={notification.get("value")}
+                      html={html}
+                      markAsRead={markNotificationAsRead}
+                    />
+                  );
+                })}
+            </ul>
           </div>
         )}
       </>
     );
   }
 }
+
+Notifications.defaultProps = {
+  displayDrawer: false,
+  listNotifications: null,
+  handleDisplayDrawer: () => {},
+  handleHideDrawer: () => {},
+  markNotificationAsRead: () => {},
+  fetchNotifications: () => {},
+};
+
+Notifications.propTypes = {
+  displayDrawer: PropTypes.bool,
+  listNotifications: PropTypes.object,
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
+  markNotificationAsRead: PropTypes.func,
+};
+
+const cssVars = {
+  mainColor: "#e01d3f",
+};
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
 
 const opacityKeyframes = {
   from: {
@@ -96,7 +131,7 @@ const opacityKeyframes = {
   },
 };
 
-const translateKeyframes = {
+const translateYKeyframes = {
   "0%": {
     transform: "translateY(0)",
   },
@@ -105,70 +140,106 @@ const translateKeyframes = {
     transform: "translateY(-5px)",
   },
 
-  "100%": {
+  "75%": {
     transform: "translateY(5px)",
+  },
+
+  "100%": {
+    transform: "translateY(0)",
+  },
+};
+
+const borderKeyframes = {
+  "0%": {
+    border: `3px dashed deepSkyBlue`,
+  },
+
+  "100%": {
+    border: `3px dashed ${cssVars.mainColor}`,
   },
 };
 
 const styles = StyleSheet.create({
-  notificationPanelStyle: {
-    border: "1px red dashed",
-    padding: "1rem",
-    width: "35%",
-    float: "right",
-    "@media (max-width: 900px)": {
-      border: "none",
-      height: "100vh",
-      width: "100vw",
-      float: "none",
-      padding: 0,
-      fontSize: 20,
-    },
-  },
-
-  menuItemStyle: {
-    display: "flex",
-    justifyContent: "flex-end",
+  menuItem: {
     float: "right",
     backgroundColor: "#fff8f8",
-    "@media (max-width: 900px)": {
-      display: "none",
-    },
     ":hover": {
       cursor: "pointer",
-      animationName: [opacityKeyframes, translateKeyframes],
-      animationDuration: "1s, 500ms",
-      animationIterationCount: "3",
+      animationName: [opacityKeyframes, translateYKeyframes],
+      animationDuration: "1s, 0.5s",
+      animationIterationCount: 3,
     },
   },
 
-  listStyle: {
-    listStyle: "none",
-    padding: 0,
+  menuItemPNoShow: {
+    marginRight: "8px",
+    display: "none",
   },
 
-  displayNone: {
-    display: "none",
+  menuItemPShow: {
+    marginRight: "8px",
+  },
+
+  notifications: {
+    // float: "right",
+    // border: `3px dashed ${cssVars.mainColor}`,
+    padding: "10px",
+    marginBottom: "20px",
+    animationName: [borderKeyframes],
+    animationDuration: "0.8s",
+    animationIterationCount: 1,
+    animationFillMode: "forwards",
+    ":hover": {
+      border: `3px dashed deepSkyBlue`,
+      // animationFillMode: "forwards",
+    },
+    [screenSize.small]: {
+      float: "none",
+      border: "none",
+      listStyle: "none",
+      padding: 0,
+      fontSize: "20px",
+      ":hover": {
+        border: "none",
+        // animationFillMode: "forwards",
+      },
+      position: "absolute",
+      background: "white",
+      height: "110vh",
+      width: "100vw",
+      zIndex: 10,
+    },
+  },
+
+  notificationsButtonImage: {
+    width: "10px",
+  },
+
+  notificationsP: {
+    margin: 0,
+    marginTop: "15px",
+  },
+
+  notificationsUL: {
+    [screenSize.small]: {
+      padding: 0,
+    },
   },
 });
 
 const mapStateToProps = (state) => {
-  const notificationsList = [
-    ...Object.values(
-      state.notifications.valueSeq().toArray()[2].entities.messages
-    ),
-  ];
+  const unreadNotifications = getUnreadNotifications(state);
+
   return {
-    listNotifications: notificationsList,
+    listNotifications: unreadNotifications,
   };
 };
-const mapDispatchToProps = (dispatch) => ({
-  fetchNotifications: dispatch(fetchNotifications()),
-});
 
-const ConnectedNotifications = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Notifications);
+const mapDispatchToProps = {
+  fetchNotifications,
+  markNotificationAsRead: markAsAread,
+};
 
-export { ConnectedNotifications };
+// export default Notifications;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

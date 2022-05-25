@@ -1,43 +1,103 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, css } from "aphrodite";
 
-const NotificationItem = ({ type, html, value, markNotificationAsRead }) => {
-	return (
-		<li className={type === 'default' ? css(styles.defaultNotificationStyle, styles.smallNotificationStyle) : css(styles.urgentNotificationStyle, styles.smallNotificationStyle)} data-notification-type={type} dangerouslySetInnerHTML={html} onClick={markNotificationAsRead}>{value}</li>
-	)
-}
+const NotificationItem = React.memo(function NotificationItem({
+  type,
+  value,
+  html,
+  markAsRead,
+  id,
+}) {
+  let listItem;
 
-NotificationItem.propTypes = {
-	type: PropTypes.string.isRequired,
-	html: PropTypes.shape({
-		__html: PropTypes.string
-	}),
-	value: PropTypes.string,
-	onClick: PropTypes.func
-};
+  let typeStyle = css(type === "urgent" ? styles.urgent : styles.default);
+
+  if (value) {
+    if (type === "noNotifications") {
+      listItem = (
+        <li
+          className={css(styles.noNotifications)}
+          data-notification-type={type}
+        >
+          {value}
+        </li>
+      );
+    } else {
+      listItem = (
+        <li
+          className={typeStyle}
+          data-notification-type={type}
+          onClick={() => markAsRead(id)}
+        >
+          {value}
+        </li>
+      );
+    }
+  } else {
+    listItem = (
+      <li
+        className={typeStyle}
+        data-notification-type={type}
+        dangerouslySetInnerHTML={html}
+        onClick={() => markAsRead(id)}
+      ></li>
+    );
+  }
+
+  return listItem;
+});
 
 NotificationItem.defaultProps = {
-	type: 'default',
-	onClick: () => {}
+  type: "default",
+  value: "",
+  html: {},
+  markAsRead: () => {},
+  id: NaN,
+};
+
+NotificationItem.propTypes = {
+  type: PropTypes.string,
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  markAsRead: PropTypes.func,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
+
+const listItemSmall = {
+  listStyle: "none",
+  borderBottom: "1px solid black",
+  padding: "10px 8px",
+  fontSize: "20px",
 };
 
 const styles = StyleSheet.create({
-  defaultNotificationStyle: {
-		color: 'blue',
-	},
+  default: {
+    color: "blue",
+    ":hover": {
+      cursor: "pointer",
+    },
+    [screenSize.small]: listItemSmall,
+  },
 
-  urgentNotificationStyle: {
-		color: 'red',
-	},
+  urgent: {
+    color: "red",
+    ":hover": {
+      cursor: "pointer",
+    },
+    [screenSize.small]: listItemSmall,
+  },
 
-	smallNotificationStyle: {
-		'@media (max-width: 900px)': {
-			borderBottom: '1px solid black',
-			padding: '10px 8px'
-    }
+  noNotifications: {
+    color: "black",
+    [screenSize.small]: listItemSmall,
+  },
+});
 
-	}
-})
-
-export default memo(NotificationItem)
+export default NotificationItem;

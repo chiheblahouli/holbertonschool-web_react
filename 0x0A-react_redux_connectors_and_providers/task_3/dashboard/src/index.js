@@ -1,22 +1,32 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ConnectedApp } from "./App/App";
-import { applyMiddleware, createStore, compose } from "redux";
-import uiReducer from "./reducers/uiReducer";
+import { createStore, applyMiddleware, compose } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
+import App from "./App/App";
+import uiReducer, { initialState } from "./reducers/uiReducer";
+import { Map } from "immutable";
+
+// const store = createStore(
+//   uiReducer,
+//   Map(initialState),
+//   composeWithDevTools(applyMiddleware(thunk))
+// );
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   uiReducer,
-  compose(
-    applyMiddleware(thunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
+  Map(initialState),
+  composeEnhancers(applyMiddleware(thunk))
 );
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ConnectedApp />
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
   document.getElementById("root")
 );

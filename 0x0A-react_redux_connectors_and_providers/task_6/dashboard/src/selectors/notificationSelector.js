@@ -1,18 +1,19 @@
-import { Map } from "immutable";
-import { notificationsNormalizer } from "../schema/notifications";
-
-const filterTypeSelected = (state) => state.get("filter");
-
-const getNotifications = (state) => {
-  const notifications = state.getIn(["notifications", "entities", "messages"]);
-  return Map(notifications);
+export const filterTypeSelected = (state) => {
+  return state.get("filter");
 };
-
-const getUnreadNotifications = (state) => {
-  const notifications = state.getIn(["notifications", "entities", "messages"]);
-  return Map(notifications).filter(
-    (notification) => notification.isRead !== true
-  );
+export const getNotifications = (state) => {
+  return state.get("notifications");
 };
+export const getUnreadNotifications = (state) => {
+  const notifications = state.notifications.get("messages");
 
-export { filterTypeSelected, getNotifications, getUnreadNotifications };
+  if (notifications) {
+    const filtered = notifications
+      .valueSeq()
+      .filter((value) => value.get("isRead") === false);
+
+    return filtered;
+  }
+
+  return notifications;
+};

@@ -1,36 +1,34 @@
-import { SELECT_COURSE } from "../actions/courseActionTypes";
-import { displayNotificationDrawer, login } from "../actions/uiActionCreators";
-import uiReducer from "./uiReducer";
-import { Map } from "immutable";
+import uiReducer, { initialState } from "./uiReducer";
+import { LOGIN, DISPLAY_NOTIFICATION_DRAWER } from "../actions/uiActionTypes";
 
-const initialState = Map({
-  isNotificationDrawerVisible: false,
-  isUserLoggedIn: false,
-  user: {},
-});
+const USER = { email: "larry@hudson.com", password: "123456" };
 
-describe("uiReducer", () => {
-  it("should return initial state when no action is passed to uiReducer", () => {
-    const newState = uiReducer(initialState, "");
-    expect(newState.toJS()).toEqual(initialState.toJS());
+describe("uiReducer tests", function () {
+  it("verifies the state returned by the uiReducer function equals the initial state when no action is passed", function () {
+    const state = uiReducer(undefined, {});
+
+    expect(state.toJS()).toEqual(initialState);
+  });
+  it("verifies the state returned by the uiReducer function equals the initial state when the action SELECT_COURSE is passed", function () {
+    const state = uiReducer(undefined, { type: "SELECT_COURSE" });
+
+    expect(state.toJS()).toEqual(initialState);
+  });
+  it("verifies the state returned by the uiReducer function, when the action DISPLAY_NOTIFICATION_DRAWER is passed, changes correctly the isNotificationDrawerVisible property", function () {
+    const state = uiReducer(undefined, { type: DISPLAY_NOTIFICATION_DRAWER });
+
+    expect(state.toJS()).toEqual({
+      ...initialState,
+      isNotificationDrawerVisible: true,
+    });
   });
 
-  it("should return initial state when SELECT_COURSE is passed to uiReducer", () => {
-    const newState = uiReducer(initialState, SELECT_COURSE);
-    expect(newState.toJS()).toEqual(initialState.toJS());
-  });
+  it("verifies the state returned by the uiReducer function, when the action LOGIN is passed, changes correctly the user property", function () {
+    const state = uiReducer(undefined, { type: LOGIN, user: USER });
 
-  it("should update isNotificationDrawerVisible property in state to true when DISPLAY_NOTIFICATION_DRAWER is passed to uiReducer", () => {
-    const newState = uiReducer(initialState, displayNotificationDrawer());
-    expect(newState.toJS().isNotificationDrawerVisible).toEqual(true);
-  });
-
-  it("should update user property in state to user object when LOGIN is passed to uiReducer", () => {
-    const user = {
-      email: "thedude@lebowski.com",
-      password: "dudeabides",
-    };
-    const newState = uiReducer(initialState, login(user.email, user.password));
-    expect(newState.toJS().user).toEqual(user);
+    expect(state.toJS()).toEqual({
+      ...initialState,
+      user: USER,
+    });
   });
 });

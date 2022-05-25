@@ -1,37 +1,43 @@
-/**
- * @jest-environment jsdom
- */
+import { shallow, mount } from "enzyme";
 import React from "react";
-import { shallow } from "enzyme";
-import Header from "./Header";
+import { Header } from "./Header";
 import { StyleSheetTestUtils } from "aphrodite";
+import AppContext, { user, logOut } from "../App/AppContext";
 
-StyleSheetTestUtils.suppressStyleInjection();
-
-const loggedInUser = {
-  email: "thedude@lebowski.com",
-  password: "thedudeabides",
-};
+const USER = { email: "larry@hudson.com", password: "123456" };
 
 describe("<Header />", () => {
-  it("renders a <Header /> component", () => {
-    const wrapper = shallow(<Header />);
-    expect(wrapper).toHaveLength(1);
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
-  it("renders a <Header /> component and checks contents", () => {
+  it("Header renders without crashing", () => {
     const wrapper = shallow(<Header />);
-    expect(wrapper.find("header h1")).toHaveLength(1);
-    expect(wrapper.find("header img")).toHaveLength(1);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render img", () => {
+    const wrapper = shallow(<Header user={USER} />);
+    wrapper.update();
+    expect(wrapper.find("div img")).toHaveLength(1);
+  });
+  it("Verify that the components render h1", () => {
+    const wrapper = shallow(<Header user={USER} />);
+    wrapper.update();
+    expect(wrapper.find("div h1")).toHaveLength(1);
   });
 
-  it("renders a <Header /> component with default context and verifies that logoutSection is not created", () => {
+  it("mounts the Header component with a default context value. The logoutSection is not created", () => {
     const wrapper = shallow(<Header />);
+
     expect(wrapper.find("#logoutSection")).toHaveLength(0);
   });
 
-  it("renders a <Header /> component with user defined and verifies that logoutSection is created", () => {
-    const wrapper = shallow(<Header user={loggedInUser} />);
+  it("mounts the Header component with a user defined (isLoggedIn is true and an email is set). The logoutSection is created", () => {
+    const wrapper = shallow(<Header user={USER} />);
+
     expect(wrapper.find("#logoutSection")).toHaveLength(1);
   });
 });

@@ -4,43 +4,49 @@ import {
   SET_LOADING_STATE,
   FETCH_NOTIFICATIONS_SUCCESS,
 } from "./notificationActionTypes";
-import fetch from "node-fetch";
 
-export function markAsAread(index) {
+import "node-fetch";
+
+export const markAsAread = (index) => {
   return {
     type: MARK_AS_READ,
     index,
   };
-}
+};
 
-export function setNotificationFilter(filter) {
+export const boundMarkAsAread = (index) => dispatch(markAsAread(index));
+
+export const setNotificationFilter = (filter) => {
   return {
     type: SET_TYPE_FILTER,
     filter,
   };
-}
+};
 
-export function setLoadingState(boolean) {
+export const boundSetNotificationFilter = (filter) =>
+  dispatch(setNotificationFilter(filter));
+
+export const setLoadingState = (loading) => {
   return {
     type: SET_LOADING_STATE,
-    payload: boolean,
+    loading,
   };
-}
+};
 
-export function setNotifications(array) {
+export const setNotifications = (data) => {
   return {
     type: FETCH_NOTIFICATIONS_SUCCESS,
-    payload: array,
+    data,
   };
-}
+};
 
-export function fetchNotifications() {
+export const fetchNotifications = () => {
   return (dispatch) => {
     dispatch(setLoadingState(true));
-    return fetch("/notifications.json")
-      .then((data) => data.json())
-      .then((array) => dispatch(setNotifications(array)))
-      .catch((err) => console.log(err))
-      .then(() => dispatch(setLoadingState(false)));
+    return fetch("./notifications.json")
+      .then((res) => res.json())
+      .then((data) => dispatch(setNotifications(data)))
+      .catch((error) => {})
+      .finally(() => dispatch(setLoadingState(false)));
   };
-}
+};

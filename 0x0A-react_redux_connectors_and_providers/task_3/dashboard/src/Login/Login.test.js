@@ -1,31 +1,57 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import Login from './Login';
-import { StyleSheetTestUtils } from 'aphrodite';
+import { shallow } from "enzyme";
+import React from "react";
+import Login from "./Login";
+import { StyleSheetTestUtils } from "aphrodite";
 
-StyleSheetTestUtils.suppressStyleInjection();
+describe("<Login />", () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-describe('<Login />', () => {
-  it('renders a <Login /> component', () => {
+  it("Login renders without crashing", () => {
     const wrapper = shallow(<Login />);
-    expect(wrapper).toHaveLength(1);
-	});
-
-	it('renders a <Login /> component and checks contents', () => {
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components render 3 input", () => {
     const wrapper = shallow(<Login />);
-    expect(wrapper.find('div.App-login input')).toHaveLength(3);
-    expect(wrapper.find('div.App-login label')).toHaveLength(2);
-	});
-
-	it('verifies that the submit button is disabled by default', () => {
+    wrapper.update();
+    expect(wrapper.find("div input")).toHaveLength(3);
+  });
+  it("Verify that the components render 2 label", () => {
     const wrapper = shallow(<Login />);
-    expect(wrapper.find({ type: 'submit' }).props().disabled).toBe(true);
-	});
+    wrapper.update();
+    expect(wrapper.find("div label")).toHaveLength(2);
+  });
 
-	it('verifies that after changing the value of the two inputs, the button is enabled', () => {
+  it("Verify that the components render 2 label", () => {
     const wrapper = shallow(<Login />);
-    wrapper.find({ name: 'email' }).simulate('change', { target: { name: 'email', value: 'thedudeabides@lebowski.com' } });
-    wrapper.find({ name: 'password' }).simulate('change', { target: { name: 'password', value: 'markazeronextframedude' } });
-    expect(wrapper.find({ type: 'submit' }).props().disabled).toBe(false);
-	});
+    const submitInput = wrapper.find("form input[type='submit']");
+
+    expect(submitInput).toHaveLength(1);
+    expect(submitInput.prop("disabled")).toEqual(true);
+  });
+
+  it("Verify that the components render 2 label", () => {
+    const wrapper = shallow(<Login />);
+    const emailInput = wrapper.find("#email");
+    const passwordInput = wrapper.find("#password");
+
+    emailInput.simulate("change", {
+      target: { name: "email", value: "Larry@email.com" },
+    });
+
+    let submitInput = wrapper.find("form input[type='submit']");
+
+    expect(submitInput.prop("disabled")).toEqual(true);
+
+    passwordInput.simulate("change", {
+      target: { name: "password", value: "123456789" },
+    });
+
+    submitInput = wrapper.find("form input[type='submit']");
+    expect(submitInput.prop("disabled")).toEqual(false);
+  });
 });

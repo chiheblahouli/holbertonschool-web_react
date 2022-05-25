@@ -6,57 +6,62 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
 } from "./uiActionTypes";
-import fetch from "node-fetch";
 
-export function login(email, password) {
+import "node-fetch";
+
+export const login = (email, password) => {
   return {
     type: LOGIN,
     user: { email, password },
   };
-}
+};
 
-export function logout() {
+export const boundLogin = (email, password) => dispatch(login(email, password));
+
+export const logout = () => {
   return {
     type: LOGOUT,
   };
-}
+};
 
-export function displayNotificationDrawer() {
+export const boundLogout = () => dispatch(logout());
+
+export const displayNotificationDrawer = () => {
   return {
     type: DISPLAY_NOTIFICATION_DRAWER,
   };
-}
+};
 
-export function hideNotificationDrawer() {
+export const boundDisplayNotificationDrawer = () =>
+  dispatch(displayNotificationDrawer());
+
+export const hideNotificationDrawer = () => {
   return {
     type: HIDE_NOTIFICATION_DRAWER,
   };
-}
+};
 
-export function loginSuccess() {
+export const boundHideNotificationDrawer = () =>
+  dispatch(hideNotificationDrawer());
+
+export const loginSuccess = () => {
   return {
     type: LOGIN_SUCCESS,
   };
-}
+};
 
-export function loginFailure() {
+export const loginFailure = () => {
   return {
     type: LOGIN_FAILURE,
   };
-}
+};
 
-export function loginRequest(email, password) {
-  return function (dispatch) {
-    // the function should dispatch the login action
-    // using the action creator previously created
+export const loginRequest = (email, password) => {
+  return (dispatch) => {
     dispatch(login(email, password));
-    return (
-      // the function should fetch the API /login-success.json
-      fetch("/login-success.json")
-        // if it succeeds, dispatch the loginSuccess action
-        .then(() => dispatch(loginSuccess()))
-        // if the API fails, dispatch the loginFailure action
-        .catch(() => dispatch(loginFailure()))
-    );
+    return fetch("http://localhost:8564/login-success.json")
+      .then((res) => res.json())
+      .then((json) => dispatch(loginSuccess()))
+      .catch((error) => dispatch(loginFailure()));
   };
-}
+};

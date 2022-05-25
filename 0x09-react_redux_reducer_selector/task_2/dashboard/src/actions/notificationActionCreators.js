@@ -1,18 +1,20 @@
 import { MARK_AS_READ, SET_TYPE_FILTER } from "./notificationActionTypes";
 
-export function markAsAread(index) {
+export const markAsAread = (index) => {
   return {
     type: MARK_AS_READ,
     index,
   };
-}
+};
 
-export function setNotificationFilter(filter) {
+export const boundMarkAsAread = (index) => dispatch(markAsAread(index));
+
+export const setNotificationFilter = (filter) => {
   return {
     type: SET_TYPE_FILTER,
     filter,
   };
-}
+};
 
-// bound the markAsAread action creator
-// bound the setNotificationFilter action creator
+export const boundSetNotificationFilter = (filter) =>
+  dispatch(setNotificationFilter(filter));

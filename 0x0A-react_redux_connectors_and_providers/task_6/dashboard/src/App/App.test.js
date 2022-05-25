@@ -1,67 +1,67 @@
-/**
- * @jest-environment jsdom
- */
+import { shallow, mount } from "enzyme";
 import React from "react";
-import { shallow } from "enzyme";
-import App, { mapStateToProps } from "./App";
-import { ConnectedNotifications } from "../Notifications/Notifications";
-import { ConnectedHeader } from "../Header/Header";
-import Login from "../Login/Login";
-import { ConnectedFooter } from "../Footer/Footer";
-import CourseList from "../CourseList/CourseList";
+import { App, listNotificationsInitialState, mapStateToProps } from "./App";
 import { StyleSheetTestUtils } from "aphrodite";
-import { fromJS } from "immutable";
+import AppContext, { user, logOut } from "./AppContext";
 
-StyleSheetTestUtils.suppressStyleInjection();
+import { fromJS } from "immutable";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import uiReducer, { initialState } from "../reducers/uiReducer";
+
+const store = createStore(uiReducer, initialState);
 
 describe("<App />", () => {
-  it("renders an <App /> component", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.exists()).toBe(true);
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
-  it("checks for a <Notifications /> component", () => {
+  it("App renders without crashing", () => {
     const wrapper = shallow(<App />);
-    expect(wrapper.find(ConnectedNotifications)).toHaveLength(1);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("should contain the Login component", () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.find("Login")).toHaveLength(1);
   });
 
-  it("checks for a <Header /> component", () => {
+  it("CourseList is not displayed with isLoggedIn false by default", () => {
     const wrapper = shallow(<App />);
-    expect(wrapper.find(ConnectedHeader)).toHaveLength(1);
+    expect(wrapper.find("CourseList")).toHaveLength(0);
   });
 
-  it("checks for a <Login /> component", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.find(Login)).toHaveLength(1);
-  });
-
-  it("checks for a <Footer /> component", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.find(ConnectedFooter)).toHaveLength(1);
-  });
-
-  it("checks that <CourseList /> component is not displayed", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.find(CourseList)).toHaveLength(0);
-  });
-
-  it("checks component behavior when isLoggedIn === true", () => {
+  it("isLoggedIn is true", () => {
     const wrapper = shallow(<App isLoggedIn={true} />);
-    expect(wrapper.find(Login)).toHaveLength(0);
-    expect(wrapper.find(CourseList)).toHaveLength(1);
+
+    expect(wrapper.find("Login")).toHaveLength(0);
+    expect(wrapper.find("CourseList")).toHaveLength(1);
   });
 });
 
-describe("Redux tests", () => {
-  it("verifies mapStateToProps returns the right object for isUserLoggedIn and isNotificationDrawerVisible", () => {
-    const state = {
+describe("App Redux", () => {
+  it("mapStateToProps returns the right object from user Login", () => {
+    let state = {
       ui: fromJS({
         isUserLoggedIn: true,
+      }),
+    };
+
+    const result = mapStateToProps(state);
+
+    expect(result).toEqual({ isLoggedIn: true });
+  });
+  it("mapStateToProps returns the right object from display Drawer", () => {
+    let state = {
+      ui: fromJS({
         isNotificationDrawerVisible: true,
       }),
     };
+
     const result = mapStateToProps(state);
-    expect(result.isLoggedIn).toEqual(true);
-    expect(result.displayDrawer).toEqual(true);
+
+    expect(result).toEqual({ displayDrawer: true });
   });
 });

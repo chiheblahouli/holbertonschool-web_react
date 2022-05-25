@@ -1,56 +1,43 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import { NotificationItem } from './NotificationItem';
-import { Notifications } from './Notifications';
+import { shallow } from "enzyme";
+import React from "react";
+import Notifications from "./Notifications";
 
-describe('<NotificationItem />', () => {
-    it('NotificationItem renders without crashing', () => {
-        const wrapper = shallow(<NotificationItem />);
-        expect(wrapper).toHaveLength(1);
-    });
-
-
-    it('<Notification /> render 3 NotificationItem components', () => {
-        const wrapper = shallow(<Notifications />)
-        wrapper.setProps({ "displayDrawer": true })
-
-        expect(wrapper.find('.listNotificationItems').children()).toHaveLength(3);
-    })
-
-    it('first <NotificationItem /> node render the right html', () => {
-        const wrapper = shallow(<Notifications />);
-        wrapper.setProps({ "displayDrawer": true })
-
-        wrapper.setProps({ "displayDrawer": true });
-        expect(wrapper.find(".listNotificationItems").children().first().html()).toBe("<li type=\"dafault\">New course available</li>")
-    })
-
-    it('last <NotificationItem /> node render the right html', () => {
-        const wrapper = shallow(<Notifications />)
-        wrapper.setProps({ "displayDrawer": true })
-        expect(wrapper.find(".listNotificationItems")
-            .children().last().html())
-            .toBe("<li type=\"ultraUrgent\"><strong>Urgent requirement</strong> - complete by EOD</li>")
-    })
-
-    describe("div.Notifications displayed when dispalydrawer is false", () => {
-        const wrapper = shallow(<Notifications />)
-        wrapper.setProps({ "displayDrawer": false })
-        expect(wrapper.find('.listNotificationItems').exists()).toBeFalsy()
-    })
-    describe("div.Notifications not displayed when dispalydrawer is true", () => {
-        const wrapper = shallow(<Notifications />)
-        wrapper.setProps({ "displayDrawer": true })
-        expect(wrapper.find('.listNotificationItems').exists()).toBeTruthy()
-    })
-    describe("Menu item is displayed when displayDrawer is true and displayDrawer is false", () => {
-        const wrapper = shallow(<Notifications />)
-        wrapper.setProps({ "displayDrawer": true })
-        expect(wrapper.find('.menuItem').exists()).toBeTruthy()
-        wrapper.setProps({ "displayDrawer": false })
-        expect(wrapper.find('.menuItem').exists()).toBeTruthy()
-
-    })
-
-
+describe("<Notifications />", () => {
+  it("Notifications renders without crashing", () => {
+    const wrapper = shallow(<Notifications />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Notifications renders Notification Item and first item has correct html", () => {
+    const wrapper = shallow(<Notifications displayDrawer />);
+    wrapper.update();
+    const listItems = wrapper.find("NotificationItem");
+    expect(listItems).toBeDefined();
+    expect(listItems.first().html()).toEqual(
+      '<li data-notification-type="default">New course available</li>'
+    );
+  });
+  it("menu item is being displayed when displayDrawer is false", () => {
+    const wrapper = shallow(<Notifications />);
+    wrapper.update();
+    const item = wrapper.find("div.menuItem");
+    expect(item).toHaveLength(1);
+  });
+  it("div.Notifications is not being displayed when displayDrawer is false", () => {
+    const wrapper = shallow(<Notifications />);
+    wrapper.update();
+    const item = wrapper.find("div.Notifications");
+    expect(item).toHaveLength(0);
+  });
+  it("menu item is being displayed when displayDrawer is true", () => {
+    const wrapper = shallow(<Notifications displayDrawer />);
+    wrapper.update();
+    const item = wrapper.find("div.menuItem");
+    expect(item).toHaveLength(1);
+  });
+  it("div.Notifications is being displayed when displayDrawer is true", () => {
+    const wrapper = shallow(<Notifications displayDrawer />);
+    wrapper.update();
+    const item = wrapper.find("div.Notifications");
+    expect(item).toHaveLength(1);
+  });
 });
